@@ -1,6 +1,10 @@
 import { pgTable, text, timestamp, integer, uuid, boolean, pgPolicy, jsonb } from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
 
+// Helper for RLS: Checks if current_setting('app.current_user_id') matches the row's userId
+// CRITICAL: This depends on the transaction setting 'is_local=true' to avoid connection pooling leaks.
+const authenticatedUser = sql`(select current_setting('app.current_user_id', true))`;
+
 // --- Better-Auth Required Tables ---
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -11,15 +15,30 @@ export const user = pgTable("user", {
   createdAt: timestamp("createdAt").notNull(),
   updatedAt: timestamp("updatedAt").notNull(),
   role: text("role").notNull().default("founder"), // "vc" or "founder"
-});
+}, (t) => [
+  pgPolicy("user_owner_access", {
+    for: "all",
+    using: sql`${t.id} = ${authenticatedUser}`,
+    withCheck: sql`${t.id} = ${authenticatedUser}`,
+  }),
+]);
 
 export const session = pgTable("session", {
   id: text("id").primaryKey(),
   expiresAt: timestamp("expiresAt").notNull(),
+  token: text("token").notNull(),
   ipAddress: text("ipAddress"),
   userAgent: text("userAgent"),
   userId: text("userId").notNull().references(() => user.id),
-});
+  createdAt: timestamp("createdAt").notNull(),
+  updatedAt: timestamp("updatedAt").notNull(), // Added updatedAt field
+}, (t) => [
+  pgPolicy("session_owner_access", {
+    for: "all",
+    using: sql`${t.userId} = ${authenticatedUser}`,
+    withCheck: sql`${t.userId} = ${authenticatedUser}`,
+  }),
+]);
 
 export const account = pgTable("account", {
   id: text("id").primaryKey(),
@@ -31,20 +50,30 @@ export const account = pgTable("account", {
   idToken: text("idToken"),
   expiresAt: timestamp("expiresAt"),
   password: text("password"),
-});
+  createdAt: timestamp("createdAt").notNull(),
+  updatedAt: timestamp("updatedAt").notNull(),
+}, (t) => [
+  pgPolicy("account_owner_access", {
+    for: "all",
+    using: sql`${t.userId} = ${authenticatedUser}`,
+    withCheck: sql`${t.userId} = ${authenticatedUser}`,
+  }),
+]);
 
 export const verification = pgTable("verification", {
   id: text("id").primaryKey(),
   identifier: text("identifier").notNull(),
   value: text("value").notNull(),
   expiresAt: timestamp("expiresAt").notNull(),
-});
+}, (t) => [
+  pgPolicy("verification_internal_access", {
+    for: "all",
+    using: sql`false`, // Deny all direct access by default
+    withCheck: sql`false`, // Deny all direct write access by default
+  }),
+]);
 
 // --- Funnel.vc Custom Tables with RLS ---
-
-// Helper for RLS: Checks if current_setting('app.current_user_id') matches the row's userId
-// CRITICAL: This depends on the transaction setting 'is_local=true' to avoid connection pooling leaks.
-const authenticatedUser = sql`(select current_setting('app.current_user_id', true))`;
 
 export const vcProfile = pgTable("vc_profile", {
   id: uuid("id").defaultRandom().primaryKey(),
