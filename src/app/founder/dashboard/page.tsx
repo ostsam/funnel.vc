@@ -217,8 +217,8 @@ export default function FounderDashboard() {
                           <p className="font-medium text-black">What happens next:</p>
                           <ul className="mt-2 space-y-1 text-black">
                             <li>1. AI analyzes your deck against their thesis</li>
-                            <li>2. If it's a match, your pitch goes to their Monday.com board</li>
-                            <li>3. If not, you'll get instant feedback on why</li>
+                            <li>2. If it&apos;s a match, your pitch goes to their Monday.com board</li>
+                            <li>3. If not, you&apos;ll get instant feedback on why</li>
                           </ul>
                         </div>
                       </div>

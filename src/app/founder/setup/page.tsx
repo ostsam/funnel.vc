@@ -157,7 +157,7 @@ export default function FounderSetupPage() {
               <div className="rounded-lg border bg-zinc-50 p-4">
                 <h4 className="mb-2 font-medium text-black">What happens next?</h4>
                 <ul className="space-y-1 text-sm text-black">
-                  <li>✓ We'll analyze your deck using AI</li>
+                  <li>✓ We&apos;ll analyze your deck using AI</li>
                   <li>✓ Match you with VCs looking for your sector</li>
                   <li>✓ Validate thesis fit before sending</li>
                   <li>✓ Get instant feedback on your match quality</li>
