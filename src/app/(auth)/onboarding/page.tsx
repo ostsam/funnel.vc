@@ -47,7 +47,7 @@ export default function OnboardingPage() {
         <div className="text-center">
           <h1 className="mb-2 text-3xl font-bold text-black">Welcome to Funnel.vc</h1>
           <p className="text-black">
-            Let's get you set up. Choose your role to continue.
+            Let&apos;s get you set up. Choose your role to continue.
           </p>
         </div>
 
@@ -62,7 +62,7 @@ export default function OnboardingPage() {
               <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-600 text-white">
                 <Rocket className="h-6 w-6" />
               </div>
-              <CardTitle className="text-black">I'm a Founder</CardTitle>
+              <CardTitle className="text-black">I&apos;m a Founder</CardTitle>
               <CardDescription className="text-black">
                 Get matched with VCs who are actively looking for startups in your sector
               </CardDescription>
@@ -86,7 +86,7 @@ export default function OnboardingPage() {
               <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-blue-600 text-white">
                 <Building2 className="h-6 w-6" />
               </div>
-              <CardTitle className="text-black">I'm a VC</CardTitle>
+              <CardTitle className="text-black">I&apos;m a VC</CardTitle>
               <CardDescription className="text-black">
                 Publish your thesis and receive pre-qualified deal flow that matches your criteria
               </CardDescription>

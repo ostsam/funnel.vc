@@ -119,7 +119,7 @@ export default async function VCProfilePage({ params }: { params: Promise<{ slug
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="text-black">Investment Thesis</CardTitle>
-            <CardDescription className="text-black">What we're looking for</CardDescription>
+            <CardDescription className="text-black">What we&apos;re looking for</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="whitespace-pre-wrap text-black">
@@ -148,7 +148,7 @@ export default async function VCProfilePage({ params }: { params: Promise<{ slug
         {/* CTA Section */}
         <Card className="border-blue-600 bg-blue-600 text-white">
           <CardHeader>
-            <CardTitle className="text-white">Think you're a fit?</CardTitle>
+            <CardTitle className="text-white">Think you&apos;re a fit?</CardTitle>
             <CardDescription className="text-white">
               Get AI-validated matching before submitting your pitch
             </CardDescription>
