@@ -123,7 +123,7 @@ export default function VCSettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-black">Investment Thesis</CardTitle>
-              <CardDescription className="text-black">Define what you're looking for</CardDescription>
+              <CardDescription className="text-black">Define what you&apos;re looking for</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">

@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Building2, DollarSign, Target, ArrowLeft } from "lucide-react";
 import { db } from "@/db/client";
 import { vcProfile } from "@/db/schema";
@@ -21,7 +20,7 @@ async function getVCProfile(slug: string) {
   let parsedSectors: string[] = [];
   try {
     parsedSectors = JSON.parse(profile.sectors);
-  } catch (e) {
+  } catch (_) {
     console.error("Failed to parse sectors for profile:", profile.id);
     parsedSectors = [];
   }
