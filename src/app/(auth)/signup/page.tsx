@@ -2,17 +2,22 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import AuthLayout from "@/components/auth-layout";
 
-export default function SignupPage() {
+interface SignupPageProps {
+  searchParams: {
+    role?: string;
+  };
+}
+
+export default function SignupPage({ searchParams }: SignupPageProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const roleParam = searchParams.get("role");
+  const roleParam = searchParams.role;
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -35,7 +40,7 @@ export default function SignupPage() {
           name,
           email,
           password,
-          role: roleParam || "founder"
+          role: roleParam, // Use the role from the URL
         }),
       });
 
@@ -52,6 +57,41 @@ export default function SignupPage() {
       setIsLoading(false);
     }
   };
+
+  if (!roleParam) {
+    return (
+      <AuthLayout>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-black">Choose Your Role</CardTitle>
+            <CardDescription className="text-black">
+              Please select whether you are a Founder or a VC to proceed with signup.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <Link href="/signup?role=founder" className="w-full">
+              <Button className="w-full">
+                I&apos;m a Founder
+              </Button>
+            </Link>
+            <Link href="/signup?role=vc" className="w-full">
+              <Button variant="outline" className="w-full">
+                I&apos;m a VC
+              </Button>
+            </Link>
+          </CardContent>
+          <CardFooter>
+            <p className="text-center text-sm text-black w-full">
+              Already have an account?{" "}
+              <Link href="/login" className="font-medium text-blue-600 hover:underline">
+                Sign in
+              </Link>
+            </p>
+          </CardFooter>
+        </Card>
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout>
@@ -123,3 +163,4 @@ export default function SignupPage() {
     </AuthLayout>
   );
 }
+
