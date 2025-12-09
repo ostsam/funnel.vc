@@ -8,12 +8,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SECTORS } from "@/lib/constants";
+import { FileUpload } from "@/components/file-upload";
 
 export default function FounderSetupPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedSector, setSelectedSector] = useState("");
   const [error, setError] = useState("");
+  const [file, setFile] = useState<File | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,18 +29,29 @@ export default function FounderSetupPage() {
     }
 
     const formData = new FormData(e.currentTarget);
-    const data = {
-      startupName: formData.get("startupName") as string,
-      sector: selectedSector,
-      askAmount: parseInt(formData.get("askAmount") as string),
-      deckLink: formData.get("deckLink") as string,
-    };
+    
+    // Validation: Require either file or deckLink (if we kept it, but we are replacing it with upload primarily)
+    // If the file upload component is used, we expect 'file'
+    if (!file) {
+        // Fallback or error if no file selected
+        // We will assume file upload is mandatory now as per user request to "add upload field"
+        setError("Please upload your pitch deck");
+        setIsLoading(false);
+        return;
+    }
 
     try {
+      // Construct FormData for multipart/form-data request
+      const submitData = new FormData();
+      submitData.append("startupName", formData.get("startupName") as string);
+      submitData.append("sector", selectedSector);
+      submitData.append("askAmount", formData.get("askAmount") as string);
+      submitData.append("file", file);
+
       const response = await fetch("/api/founder/profile", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        // Note: Content-Type header is set automatically by browser for FormData with boundary
+        body: submitData,
       });
 
       if (!response.ok) {
@@ -135,23 +148,13 @@ export default function FounderSetupPage() {
             <CardHeader>
               <CardTitle className="text-black">Pitch Deck</CardTitle>
               <CardDescription className="text-black">
-                Share your deck so VCs can learn more about your startup
+                Upload your deck so VCs can learn more about your startup
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="deckLink" className="text-black">Pitch Deck URL</Label>
-                <Input
-                  id="deckLink"
-                  name="deckLink"
-                  type="url"
-                  placeholder="https://docsend.com/your-deck"
-                  required
-                  disabled={isLoading}
-                />
-                <p className="text-xs text-black">
-                  Link to your pitch deck (DocSend, Google Drive, Dropbox, etc.)
-                </p>
+                <Label className="text-black">Upload PDF</Label>
+                <FileUpload onFileSelect={setFile} selectedFile={file} />
               </div>
 
               <div className="rounded-lg border bg-zinc-50 p-4">
